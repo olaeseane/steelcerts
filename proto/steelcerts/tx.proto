@@ -7,7 +7,20 @@ option go_package = "github.com/sapcis/steelcerts/x/steelcerts/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc AddCertificateById(MsgAddCertificateById) returns (MsgAddCertificateByIdResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgAddCertificateById {
+  string creator = 1;
+  string id = 2;
+  string checksum = 3;
+  string productname = 4;
+  string status = 5;
+  string url = 6;
+}
+
+message MsgAddCertificateByIdResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

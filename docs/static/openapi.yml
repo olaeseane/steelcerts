@@ -19815,3 +19815,5 @@ definitions:
       and
 
       freezing clients
+  sapcis.steelcerts.steelcerts.MsgAddCertificateByIdResponse:
+    type: object

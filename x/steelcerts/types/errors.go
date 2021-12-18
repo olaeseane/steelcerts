@@ -8,5 +8,7 @@ import (
 
 // x/steelcerts module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	// ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrRecordIsExist = sdkerrors.Register(ModuleName, 1100, "The certificate already exists")
+	ErrGetCreator    = sdkerrors.Register(ModuleName, 1101, "Get creator error")
 )

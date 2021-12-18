@@ -130,8 +130,40 @@ export class HttpClient {
     }
 }
 /**
- * @title steelcerts/genesis.proto
+ * @title steelcerts/certificate.proto
  * @version version not set
  */
 export class Api extends HttpClient {
+    constructor() {
+        super(...arguments);
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryCertificateAll
+         * @summary Queries a list of certificate items.
+         * @request GET:/sapcis/steelcerts/steelcerts/certificate
+         */
+        this.queryCertificateAll = (query, params = {}) => this.request({
+            path: `/sapcis/steelcerts/steelcerts/certificate`,
+            method: "GET",
+            query: query,
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryCertificate
+         * @summary Queries a certificate by index.
+         * @request GET:/sapcis/steelcerts/steelcerts/certificate/{index}
+         */
+        this.queryCertificate = (index, params = {}) => this.request({
+            path: `/sapcis/steelcerts/steelcerts/certificate/${index}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
+    }
 }

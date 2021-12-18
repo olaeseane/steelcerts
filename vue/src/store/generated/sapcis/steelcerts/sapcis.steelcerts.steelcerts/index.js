@@ -1,6 +1,8 @@
 import { txClient, queryClient, MissingWalletError } from './module';
 // @ts-ignore
 import { SpVuexError } from '@starport/vuex';
+import { Certificate } from "./module/types/steelcerts/certificate";
+export { Certificate };
 async function initTxClient(vuexGetters) {
     return await txClient(vuexGetters['common/wallet/signer'], {
         addr: vuexGetters['common/env/apiTendermint']
@@ -34,7 +36,11 @@ function getStructure(template) {
 }
 const getDefaultState = () => {
     return {
-        _Structure: {},
+        Certificate: {},
+        CertificateAll: {},
+        _Structure: {
+            Certificate: getStructure(Certificate.fromPartial({})),
+        },
         _Subscriptions: new Set(),
     };
 };
@@ -58,6 +64,18 @@ export default {
         }
     },
     getters: {
+        getCertificate: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.Certificate[JSON.stringify(params)] ?? {};
+        },
+        getCertificateAll: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.CertificateAll[JSON.stringify(params)] ?? {};
+        },
         getTypeStructure: (state) => (type) => {
             return state._Structure[type].fields;
         }
@@ -86,6 +104,36 @@ export default {
                     throw new SpVuexError('Subscriptions: ' + e.message);
                 }
             });
+        },
+        async QueryCertificate({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryCertificate(key.index)).data;
+                commit('QUERY', { query: 'Certificate', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryCertificate', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getCertificate']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryCertificate', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
+        },
+        async QueryCertificateAll({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryCertificateAll(query)).data;
+                while (all && value.pagination && value.pagination.nextKey != null) {
+                    let next_values = (await queryClient.queryCertificateAll({ ...query, 'pagination.key': value.pagination.nextKey })).data;
+                    value = mergeResults(value, next_values);
+                }
+                commit('QUERY', { query: 'CertificateAll', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryCertificateAll', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getCertificateAll']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryCertificateAll', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
         },
         async sendMsgAddCertificateById({ rootGetters }, { value, fee = [], memo = '' }) {
             try {

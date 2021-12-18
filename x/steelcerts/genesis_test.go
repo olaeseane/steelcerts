@@ -11,6 +11,14 @@ import (
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
+		CertificateList: []types.Certificate{
+			{
+				Index: "0",
+			},
+			{
+				Index: "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -19,5 +27,7 @@ func TestGenesis(t *testing.T) {
 	got := steelcerts.ExportGenesis(ctx, *k)
 	require.NotNil(t, got)
 
+	require.Len(t, got.CertificateList, len(genesisState.CertificateList))
+	require.Subset(t, genesisState.CertificateList, got.CertificateList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

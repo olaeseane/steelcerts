@@ -1,0 +1,17 @@
+syntax = "proto3";
+package sapcis.steelcerts.steelcerts;
+
+option go_package = "github.com/sapcis/steelcerts/x/steelcerts/types";
+
+
+
+message Certificate {
+  string index = 1; 
+  string companycode = 2; 
+  string productname = 3; 
+  string status = 4; 
+  string url = 5; 
+  string checkcsum = 6; 
+  
+}
+

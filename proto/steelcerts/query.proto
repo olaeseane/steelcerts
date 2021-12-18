@@ -3,13 +3,43 @@ package sapcis.steelcerts.steelcerts;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "steelcerts/certificate.proto";
 // this line is used by starport scaffolding # 1
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sapcis/steelcerts/x/steelcerts/types";
 
 // Query defines the gRPC querier service.
 service Query {
-    // this line is used by starport scaffolding # 2
+    // Queries a certificate by index.
+	rpc Certificate(QueryGetCertificateRequest) returns (QueryGetCertificateResponse) {
+		option (google.api.http).get = "/sapcis/steelcerts/steelcerts/certificate/{index}";
+	}
+
+	// Queries a list of certificate items.
+	rpc CertificateAll(QueryAllCertificateRequest) returns (QueryAllCertificateResponse) {
+		option (google.api.http).get = "/sapcis/steelcerts/steelcerts/certificate";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+message QueryGetCertificateRequest {
+	  string index = 1;
+
+}
+
+message QueryGetCertificateResponse {
+	Certificate certificate = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllCertificateRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCertificateResponse {
+	repeated Certificate certificate = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

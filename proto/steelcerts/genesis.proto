@@ -1,11 +1,14 @@
 syntax = "proto3";
 package sapcis.steelcerts.steelcerts;
 
+import "steelcerts/certificate.proto";
 // this line is used by starport scaffolding # genesis/proto/import
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sapcis/steelcerts/x/steelcerts/types";
 
 // GenesisState defines the steelcerts module's genesis state.
 message GenesisState {
-    // this line is used by starport scaffolding # genesis/proto/state
+    repeated Certificate certificateList = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
 }
